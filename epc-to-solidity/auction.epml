@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epml:epml xmlns:epml ="http://www.epml.de">
+
+  <epc epcId="1" name="auctionStages">
+
+    <event id="2">
+      <graphics>
+        <position height="80" width="160" x="111" y="16"/>
+      </graphics>
+      <name>auctionDeployed</name>
+      <inputSet>
+        <dataInput type="address">beneficiary</dataInput>
+        <dataInput type="Item">MyItem</dataInput>
+        <dataInput type="uint">publicBiddingDeposit</dataInput>
+        <dataInput type="uint">auctionEndTime</dataInput>
+      </inputSet>
+    </event>
+
+    <arc id="0">
+      <flow source="1" target="2"/>
+    </arc>
+
+    <function id="3">
+      <graphics>
+        <position height="80" width="160" x="111" y="116"/>
+      </graphics>
+      <name>constructor</name>
+      <inputSet>
+        <dataInput type="uint">_reservePrice</dataInput>
+        <dataInput type="uint">_publicBiddingDeposit</dataInput>
+        <dataInput type="uint">_auctionDurationMinutes</dataInput>
+      </inputSet>
+    </function>
+
+    <arc id="1">
+      <flow source="2" target="3"/>
+    </arc>
+
+    <function id="4">
+      <graphics>
+        <position height="80" width="160" x="111" y="216"/>
+      </graphics>
+      <name>BidStart</name>
+      <toProcess linkToEpcId="2" />
+    </function>
+
+    <arc id="2">
+      <flow source="3" target="4"/>
+    </arc>
+
+    <epc epcId="2" name="auctionBidding">
+      <event id="5">
+        <graphics>
+          <position height="80" width="160" x="111" y="316"/>
+        </graphics>
+        <name>BidPlaced</name>
+        <inputSet>
+          <dataInput type="address">bidder</dataInput>
+          <dataInput type="uint">amount</dataInput>
+        </inputSet>
+      </event>
+
+      <function id="22">
+        <graphics>
+          <position height="80" width="160" x="111" y="116"/>
+        </graphics>
+        <name>constructor</name>
+        <inputSet>
+          <dataInput type="uint">_biddingTime</dataInput>
+        </inputSet>
+      </function>
+
+      <function id="6">
+        <graphics>
+          <position height="80" width="160" x="111" y="416"/>
+        </graphics>
+        <name>placeBid</name>
+      </function>
+
+      <arc id="4">
+        <flow source="5" target="6"/>
+      </arc>
+
+      <event id="7">
+        <graphics>
+          <position height="80" width="160" x="111" y="516"/>
+        </graphics>
+        <name>BidingCompleted</name>
+        <inputSet>
+          <dataInput type="address">highestBidder</dataInput>
+          <dataInput type="uint">highestBid</dataInput>
+        </inputSet>
+      </event>
+
+      <arc id="5">
+        <flow source="6" target="7"/>
+      </arc>
+
+      <xor id="8">
+        <graphics>
+          <position height="30" width="30" x="176" y="641"/>
+        </graphics>
+      </xor>
+
+      <arc id="6">
+        <flow source="7" target="8"/>
+      </arc>
+
+      <function id="9">
+        <graphics>
+          <position height="80" width="160" x="16" y="716"/>
+        </graphics>
+        <name>selectWinner</name>
+      </function>
+
+      <arc id="20">
+        <flow source="7" target="9"/>
+      </arc>
+
+      <function id="23">
+        <graphics>
+          <position height="80" width="160" x="16" y="716"/>
+        </graphics>
+        <name>deliver_target</name>
+        <toProcess linkToEpcId="3" />
+      </function>
+
+      <arc id="7">
+        <flow source="8" target="9"/>
+      </arc>
+
+      <epc epcId="3" name="auctionDelivery">
+        <event id="10">
+          <graphics>
+            <position height="80" width="160" x="16" y="816"/>
+          </graphics>
+          <name>Deliver</name>
+          <inputSet>
+            <dataInput type="address">highestBidder</dataInput>
+            <dataInput type="Item">item</dataInput>
+          </inputSet>
+        </event>
+
+        <arc id="8">
+          <flow source="9" target="10"/>
+        </arc>
+
+        <function id="21">
+          <graphics>
+            <position height="80" width="160" x="111" y="116"/>
+          </graphics>
+          <name>constructor</name>
+          <inputSet>
+            <dataInput type="uint">_transactionDeposit</dataInput>
+            <dataInput type="uint">_auctionDeposit</dataInput>
+          </inputSet>
+        </function>
+
+        <function id="11">
+          <graphics>
+            <position height="80" width="160" x="16" y="916"/>
+          </graphics>
+          <name>deliver</name>
+        </function>
+
+        <arc id="9">
+          <flow source="10" target="11"/>
+        </arc>
+
+        <event id="12">
+          <graphics>
+            <position height="80" width="160" x="16" y="1016"/>
+          </graphics>
+          <name>ConfirmDelivery</name>
+          <inputSet>
+            <dataInput type="address">highestBidder</dataInput>
+            <dataInput type="Item">item</dataInput>
+          </inputSet>
+        </event>
+
+        <arc id="10">
+          <flow source="11" target="12"/>
+        </arc>
+
+        <function id="13">
+          <graphics>
+            <position height="80" width="160" x="16" y="1116"/>
+          </graphics>
+          <name>confirmDelivery</name>
+        </function>
+
+        <arc id="11">
+          <flow source="12" target="13"/>
+        </arc>
+
+      </epc>
+
+      <function id="14">
+        <graphics>
+          <position height="80" width="160" x="206" y="716"/>
+        </graphics>
+        <name>cancelAuction</name>
+      </function>
+
+      <arc id="12">
+        <flow source="8" target="14"/>
+      </arc>
+      <participant id="19">
+          <name>highestBidder</name>
+           <type>address</type>
+           <attribute>payable</attribute>
+        </participant>
+        <participant id="20">
+          <name>Bid</name>
+          <type>struct</type>
+          <attribute id="1" name="bidder">address</attribute>
+          <attribute id="2" name="amount">uint</attribute>
+          <attribute id="3" name="withdrawn">bool</attribute>
+        </participant>
+	</epc>
+    <xor id="15">
+      <graphics>
+        <position height="30" width="30" x="176" y="1241"/>
+      </graphics>
+    </xor>
+ 	<arc id="13">
+      <flow source="13" target="15"/>
+    </arc>
+    <arc id="14">
+      <flow source="14" target="15"/>
+    </arc>
+    <event id="16">
+      <graphics>
+        <position height="80" width="160" x="111" y="1316"/>
+      </graphics>
+      <name>auctionEnd</name>
+    </event>
+
+    <arc id="15">
+      <flow source="15" target="16"/>
+    </arc>
+
+     <participant id="17">
+      <name>beneficiary</name>
+       <type>address</type>
+       <attribute>payable</attribute>
+     </participant>
+     <participant id="18">
+        <name>Item</name>
+        <type>struct</type>
+        <attribute id="1" name="onwer">address</attribute>
+        <attribute id="2" name="reservePrice">uint</attribute>
+        <attribute id="3" name="delivery">bool</attribute>
+     </participant>
+     <relation from="3" to="17"></relation>
+     <relation from="3" to="18"></relation>
+  </epc>
+</epml:epml>

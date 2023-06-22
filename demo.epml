@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epml:epml xmlns:epml ="http://www.epml.de">
+
+  <epc epcId="1" name="auctionStages">
+    <event id="2">
+      <graphics>
+        <position height="80" width="160" x="111" y="16"/>
+      </graphics>
+      <name>auctionDeployed</name>
+    </event>
+
+    <arc id="0">
+      <flow source="1" target="2"/>
+    </arc>
+   	 <epc epcId="2" name="auctionBidding">
+    	     <event id="5">
+      	 	<graphics>
+         	     <position height="80" width="160" x="111" y="316"/>
+         	</graphics>
+                <name>BidPlaced</name>
+   	     </event>
+	     <function id="6">
+      		<graphics>
+        	     <position height="80" width="160" x="111" y="416"/>
+      		</graphics>
+      		<name>placeBid</name>
+    	      </function>
+	      <arc id="4">
+      		  <flow source="5" target="6"/>
+    	      </arc>
+
+		     <epc epcId="3" name="auctionDelivery">
+   			    <event id="10">
+                   	   <graphics>
+        	      	       <position height="80" width="160" x="16" y="816"/>
+     		   	   </graphics>
+      		   	   <name>Deliver</name>
+    			</event>
+		     	<arc id="8">
+      		           <flow source="9" target="10"/>
+   		        </arc>
+		        <function id="11">
+     			    <graphics>
+        			<position height="80" width="160" x="16" y="916"/>
+      			    </graphics>
+      			    <name>deliver (R beneficiary)</name>
+    			</function>
+
+   			    <arc id="9">
+      			     <flow source="10" target="11"/>
+   			    </arc>
+		     </epc>
+	</epc>
+  </epc>
+</epml:epml>

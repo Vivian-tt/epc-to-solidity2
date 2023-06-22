@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epml:epml xmlns:epml ="http://www.epml.de">
+  <directory name = "Root">
+    <view name="Party">
+		<unit unitId="u1" name="beneficiary"/>
+		<unit unitId="u2" name="owner"/>
+		<unit unitId="u3" name="bidders[]"/>
+	</view>
+
+    <view name="Price">
+		<unit unitId="u4" name="publicBiddingDeposit"/>
+		<unit unitId="u5" name="reservePrice"/>
+		<unit unitId="u6" name="publicBiddingDepositReturns@mapping[address,int]"/>
+		<unit unitId="u7" name="pendingReturns@mapping[address,int]"/>
+		<unit unitId="u8" name="highestBid"/>
+		<unit unitId="u9" name="transactionDeposit"/>
+		<unit unitId="u15" name="bidAmount"/>
+	</view>
+
+    <view name="Time">
+		<unit unitId="u10" name="auctionEndTime"/>
+		<unit unitId="u11" name="endBiddingTime"/>
+		<unit unitId="u12" name="auctionDurationMinutes"/>
+
+	</view>
+    <view name="state">
+		<unit unitId="u13" name="auction_started"/>
+		<unit unitId="u14" name="delivery"/>
+	</view>
+
+	<definitions>
+		<eventDefinition DefId="1" name="BidStart"/>
+		<eventDefinition DefId="2" name="BidingCompleted"/>
+		<functionDefinition DefId="3" name="Transaction"/>
+		<eventDefinition DefId="4" name="auctionEnd"/>
+	</definitions>
+
+    <epc epcId="1" name="auctionStages">
+		 <event id="5">
+			 <name>auctionStart</name>
+			 <syntaxInfo implicitType="EventStart" />
+		 </event>
+
+		<arc id="30"><flow source="5" target="6"/>
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+
+		<function id="6">
+			<name>auctionDeployed</name>
+			<syntaxInfo implicitType="initial" />
+			<unitReference unitRef="u5" role="initial" />
+			<unitReference unitRef="u4" role="initial" />
+			<unitReference unitRef="u12" role="initial" />
+		</function>
+
+		<arc id="31"><flow source="6" target="7"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+
+		<event id="7">
+			<reference defRef="1"></reference>
+			<syntaxInfo implicitType="" />
+		</event>
+
+		<arc id="32"><flow source="7" target="8"/>
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+
+		<function id="8">
+			<name>BidProcess</name>
+			<unitReference unitRef="u15" role="initial" />
+			<syntaxInfo implicitType="payable" />
+			<toProcess linkToEpcId="2" />
+		</function>
+
+		<arc id="33"><flow source="8" target="9"/>
+			<syntaxInfo implicitType="FunctionOrArc" />
+		</arc>
+
+		<or id="9"/>
+
+		<arc id="34"><flow source="9" target="10"/>
+			<syntaxInfo implicitType="OrEventArc" />
+		</arc>
+		<arc id="35"><flow source="9" target="12"/>
+			<syntaxInfo implicitType="OrEventArc" />
+		</arc>
+
+		<event id="10">
+			<reference defRef="2"></reference>
+			<syntaxInfo implicitType="" />
+		</event>
+
+		<arc id="36"><flow source="10" target="11"/>
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+
+		<function id="11">
+			<reference defRef="3"></reference>
+			<toProcess linkToEpcId="3" />
+		</function>
+
+		<arc id="37"><flow source="11" target="12"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+
+		<event id="12">
+			<reference defRef="4"></reference>
+			<syntaxInfo implicitType="" />
+		</event>
+    </epc>
+
+    <epc epcId="2" name="auctionBidding">
+		<event id="13">
+			<reference defRef="1"></reference>
+			<syntaxInfo implicitType="" />
+		</event>
+		<arc id="38"><flow source="13" target="14"/>
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+		<function id="14">
+			<name>placeBid</name>
+		</function>
+
+		<arc id="39"><flow source="14" target="15"/>
+			<syntaxInfo implicitType="FunctionOrArc" />
+		</arc>
+
+		<or id="15"/>
+
+		<arc id="40"><flow source="15" target="16"/>
+			<syntaxInfo implicitType="OrFunctionArc" />
+		</arc>
+		<arc id="41"><flow source="15" target="17"/>
+			<syntaxInfo implicitType="OrFunctionArc" />
+		</arc>
+		<function id="16">
+			<name>selectWinner</name>
+			<syntaxInfo implicitType="payable" />
+		</function>
+		<function id="17">
+			<name>cancelAuction</name>
+			<syntaxInfo implicitType="payable" />
+		</function>
+		<arc id="42"><flow source="16" target="18"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+		<arc id="43"><flow source="17" target="20"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+		<event id="18">
+			<reference defRef="2"></reference>
+			<syntaxInfo implicitType="" />
+		</event>
+
+		<arc id="44"><flow source="18" target="19"/>
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+
+		<function id="19">
+			<reference defRef="3"></reference>
+			<toProcess linkToEpcId="3" />
+		</function>
+
+		<arc id="45"><flow source="19" target="20"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+
+		<event id="20">
+			<reference defRef="4"></reference>
+			<syntaxInfo implicitType="" />
+		</event>
+
+	</epc>
+    <epc epcId="3" name="auctionDelivery">
+		<event id="21">
+			<reference defRef="2"></reference>
+			<syntaxInfo implicitType="" />
+		</event>
+		<arc id="46"><flow source="21" target="22"/>
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+		<function id="22">
+			<name>deliver</name>
+		</function>
+		<arc id="47"><flow source="22" target="23"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+		<event id="23">
+			<name>auction_Delivered</name>
+			<syntaxInfo implicitType="" />
+		</event>
+		<arc id="48"><flow source="23" target="24"/>
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+		<function id="24">
+			<name>confirmDelivery</name>
+		</function>
+		<arc id="49"><flow source="24" target="25"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+		<event id="25">
+			<reference defRef="4"></reference>
+			<syntaxInfo implicitType="" />
+		</event>
+	</epc>
+
+  </directory>
+</epml:epml>
+
+

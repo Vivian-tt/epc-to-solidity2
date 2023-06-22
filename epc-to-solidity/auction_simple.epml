@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epml:epml xmlns:epml ="http://www.epml.de">
+  <directory name = "Root">
+    <view name="Party">
+		<unit unitId="u1" name="beneficiary"/>
+		<unit unitId="u2" name="highestBidder"/>
+	</view>
+    <view name="Price">
+		<unit unitId="u3" name="highestBid"/>
+		<unit unitId="u7" name="BidAmount"/>
+		<unit unitId="u8" name="BiddingReturns@mapping[address,int]"/>
+	</view>
+    <view name="Time">
+		<unit unitId="u4" name="auctionEndTime"/>
+		<unit unitId="u5" name="biddingTime"/>
+
+	</view>
+    <view name="state">
+		<unit unitId="u6" name="ended"/>
+	</view>
+    <epc epcId="1" name="Auction">
+	    <event id="1">
+		   <name>AuctionStart</name>
+		   <syntaxInfo implicitType="EventStart" />
+			<description></description>
+	    </event>
+		<arc id="10"><flow source="1" target="2" />
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+		<function id="2">
+			<name>initialAuction</name>
+			<syntaxInfo implicitType="initial" />
+			<unitReference unitRef="u4" role="initial" />
+			<unitReference unitRef="u1" role="initial" />
+		</function>
+		<arc id="11"><flow source="2" target="3"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+		<event id="3">
+			<name>AuctionDeployed</name>
+			<syntaxInfo implicitType="" />
+			<description></description>
+		</event>
+		<arc id="12"><flow source="3" target="4"/>
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+		<function id="4">
+			<name>bid</name>
+			<syntaxInfo implicitType="payable" />
+			<unitReference unitRef="u7" role="xiao" />
+		</function>
+		<arc id="13"><flow source="4" target="5"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+		<event id="5">
+			<name>HighestBidIncreased</name>
+			<description>[u2,u7]</description>
+			<syntaxInfo implicitType="" />
+		</event>
+		<arc id="14"><flow source="5" target="6"/>
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+		<function id="6">
+			<name>withdraw</name>
+			<syntaxInfo implicitType="returns(bool)" />
+		</function>
+		<arc id="15"><flow source="6" target="7"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+		<event id="7">
+			<name>RefundAmountBid</name>
+			<syntaxInfo implicitType="" />
+			<description></description>
+		</event>
+		<arc id="16"><flow source="7" target="8"/>
+			<syntaxInfo implicitType="EventFunctionArc" />
+		</arc>
+		<function id="8">
+			<name>auctionEnd</name>
+			<syntaxInfo implicitType="only[beneficiary]" />
+			<description>[u2,u7]</description>
+		</function>
+		<arc id="17"><flow source="8" target="9"/>
+			<syntaxInfo implicitType="FunctionEventArc" />
+		</arc>
+		<event id="9">
+			<name>AuctionEnded</name>
+			<syntaxInfo implicitType="" />
+			<description></description>
+		</event>
+    </epc>
+  </directory>
+</epml:epml>
+
+
